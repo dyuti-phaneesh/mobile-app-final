@@ -1,0 +1,168 @@
+import React, { Component } from 'react';
+import { View, AppRegistry, Text, StyleSheet, ImageBackground, TextInput, TouchableHighlight, Dimensions } from 'react-native';
+import Constants from 'expo-constants';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
+
+export default class App extends Component {
+    state = {
+        gameBoard: [
+            {
+                square: 1,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 2,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 3,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 4,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 5,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 6,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 7,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 8,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+            {
+                square: 9,
+                num1: 0,
+                num2: 0,
+                num3: 0,
+                num4: 0,
+                num5: 0,
+                num6: 0,
+                num7: 0,
+                num8: 0,
+                num9: 0,
+            },
+        ]
+    }
+    
+    //Creating a board with random numbers from 1-9 (doesn't matter order or how many for now)
+    randomBoardRender = () => {
+        this.state.gameBoard.splice(this.state.length, 0, {
+            square: this.state.square,
+            
+        })
+    }
+    
+    //Uses randomly created board and makes sure it fits all rules stated by rules method, then sets it as new board
+    editGameBoard = () => {
+        
+    }
+    
+    rules = () => {
+           
+    }
+    
+    
+    
+    
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.paragraph}>
+                    Change code in the editor and watch it change on your phone!
+                </Text>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: Constants.statusBarHeight,
+        backgroundColor: '#ecf0f1',
+    },
+    paragraph: {
+        margin: 24,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#34495e',
+    },
+});
