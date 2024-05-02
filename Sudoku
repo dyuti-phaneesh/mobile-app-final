@@ -1,0 +1,194 @@
+import React, { Component } from 'react';
+import { View, AppRegistry, Text, StyleSheet, ImageBackground, TextInput, TouchableHighlight, Dimensions } from 'react-native';
+import Constants from 'expo-constants';
+
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
+
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            score: 0,
+            easyDisplay: 'none',
+            mainDisplay: 'block',
+            instructionsDisplay: 'none',
+            mediumDisplay: 'none',
+            hardDisplay: 'none',
+            square1: ["", "", "", "", "", "", "", "", ""],
+            square2: ["", "", "", "", "", "", "", "", ""],
+            square3: ["", "", "", "", "", "", "", "", ""],
+            square4: ["", "", "", "", "", "", "", "", ""],
+            square5: ["", "", "", "", "", "", "", "", ""],
+            square6: ["", "", "", "", "", "", "", "", ""],
+            square7: ["", "", "", "", "", "", "", "", ""],
+            square8: ["", "", "", "", "", "", "", "", ""],
+            square9: ["", "", "", "", "", "", "", "", ""],
+        };
+    }
+    
+    reset() {
+        this.setState({
+            square1: ["", "", "", "", "", "", "", "", ""],
+            square2: ["", "", "", "", "", "", "", "", ""],
+            square3: ["", "", "", "", "", "", "", "", ""],
+            square4: ["", "", "", "", "", "", "", "", ""],
+            square5: ["", "", "", "", "", "", "", "", ""],
+            square6: ["", "", "", "", "", "", "", "", ""],
+            square7: ["", "", "", "", "", "", "", "", ""],
+            square8: ["", "", "", "", "", "", "", "", ""],
+            square9: ["", "", "", "", "", "", "", "", ""],
+        })
+    }
+    
+    handleEasyDisplayPagePress = () => this.setState(state => ({
+        easyDisplay: 'block',
+        mainDisplay: 'none',
+        instructionsDisplay: 'none',
+        mediumDisplay: 'none',
+        hardDisplay: 'none',
+    }));
+    
+        handleMainDisplayPagePress = () => this.setState(state => ({
+        easyDisplay: 'none',
+        mainDisplay: 'block',
+        instructionsDisplay: 'none',
+        mediumDisplay: 'none',
+        hardDisplay: 'none',
+    }));
+    
+        handleInstructionsDisplayPagePress = () => this.setState(state => ({
+        easyDisplay: 'none',
+        mainDisplay: 'none',
+        instructionsDisplay: 'bock',
+        mediumDisplay: 'none',
+        hardDisplay: 'none',
+    }));
+    
+        handleMediumDisplayPagePress = () => this.setState(state => ({
+        easyDisplay: 'none',
+        mainDisplay: 'none',
+        instructionsDisplay: 'none',
+        mediumDisplay: 'block',
+        hardDisplay: 'none',
+    }));
+    
+        handleHardDisplayPagePress = () => this.setState(state => ({
+        easyDisplay: 'none',
+        mainDisplay: 'none',
+        instructionsDisplay: 'none',
+        mediumDisplay: 'none',
+        hardDisplay: 'block',
+    }));
+    
+    
+    //Creating a board with random numbers from 1-9 (doesn't matter order or how many for now)
+    randomBoardRender = () => {
+        this.state.gameBoard.splice(this.state.length, 0, {
+            square: this.state.square,
+            
+        })
+    }
+    
+    //Uses randomly created board and makes sure it fits all rules stated by rules method, then sets it as new board
+    editGameBoard = () => {
+        
+    }
+    
+    rules = () => {
+        if(this.state.gameBoard[i].num1 = this.state.gameBoard[j].num1) {
+            this.state.gameBoard[i]
+        }
+    }
+    
+    
+    
+    
+    render() {
+        return (
+            <View style={styles.container}>
+            
+                <View style={styles.contentContainer}>
+                    
+                
+                </View>
+                
+                
+                
+                <View style={styles.navbarContainer}>
+                
+                    <TouchableHighlight style={styles.navButton}>
+                        <Text style={styles.navButtonText}>
+                            Welcome
+                        </Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton}>
+                        <Text style={styles.navButtonText}>
+                            Rules
+                        </Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton}>
+                        <Text style={styles.navButtonText}>
+                            Easy Level
+                        </Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton}>
+                        <Text style={styles.navButtonText}>
+                            Medium Level
+                        </Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton}>
+                        <Text style={styles.navButtonText}>
+                            Hard Level
+                        </Text>
+                    </TouchableHighlight>
+                </View>
+                
+            </View>
+      );
+   }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        height: deviceHeight,
+        width: deviceWidth,
+    },
+    contentContainer: {
+        height: 5*(deviceHeight/6),
+        width: deviceWidth,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'lightblue',
+    },
+    navbarContainer: {
+        height: deviceHeight/6,
+        width: deviceWidth,
+        backgroundColor: 'darkblue',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopWidth: 10,
+        borderColor: 'white',
+    },
+    navButton: {
+        height: deviceHeight/14,
+        width: deviceWidth/4,
+        backgroundColor: 'white',
+        borderColor: 'lightblue',
+        borderWidth: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 20,
+    },
+    navButtonText: {
+        fontSize: deviceHeight/40,
+        textAlign: 'center',
+        color: 'darkblue',
+    },
+
+});
