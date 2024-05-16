@@ -72,27 +72,28 @@ export default class App extends Component {
     }
 
     rules = () => {
-    let newBoard = [...this.state.board];
-        for(let i = 0; i < 9; i++) {
-            for(let j = 0; j < 9; j++) {
-                for(let k = j + 1; k < 9; k++) {
-                    let rowIndex = this.state.rowcheck.findIndex(value => value === newBoard[i][j]);
-                    if (rowIndex !== -1) {
+        let newBoard = [...this.state.board];
+        let newRowCheck = [...this.state.rowcheck];
+        let newColumnCheck = [...this.state.columncheck];
+
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                for (let k = j + 1; k < 9; k++) {
+                    let rowIndex = newRowCheck.findIndex(value => value === newBoard[i][j]);
+                    newRowCheck[rowIndex] = 0;
                     if (newBoard[i][j] === newBoard[i][k]) {
-                        newBoard[i][k] = this.state.rowcheck.find(value => value !== newBoard[i][j]);
+                        newBoard[i][k] = newRowCheck.find(value => value !== 0);
                     }
-                }
-                let columnIndex = this.state.columncheck.findIndex(value => value === newBoard[j][i]);
-                if (columnIndex !== -1) {
+                    let columnIndex = newColumnCheck.findIndex(value => value === newBoard[j][i]);
+                    newColumnCheck[columnIndex] = 0;
                     if (newBoard[j][i] === newBoard[k][i]) {
-                        newBoard[k][i] = this.state.columncheck.find(value => value !== newBoard[j][i]);
+                        newBoard[k][i] = newColumnCheck.find(value => value !== 0);
                     }
                 }
             }
         }
-    }
-    this.setState({ board: newBoard });
-}
+        this.setState({ board: newBoard });
+    };
 
     render() {
     return (
