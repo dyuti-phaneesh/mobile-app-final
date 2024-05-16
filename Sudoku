@@ -1,49 +1,23 @@
 import React, { Component } from 'react';
-import { View, AppRegistry, Text, StyleSheet, ImageBackground, TextInput, TouchableHighlight, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            score: 0,
-            homePage: 'block',
-            mainDisplay: 'block',
-            instructionsDisplay: 'none',
-            board: [
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-            ],
-            rowcheck: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            columncheck: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-            squarecheck: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            board: Array(9).fill(null).map(() => Array(9).fill("")),
+            playerBoard: [],
         };
     }
 
     reset = () => {
         this.setState({
-            board: [
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", ""],
-            ],
+            board: Array(9).fill(null).map(() => Array(9).fill("")),
+            playerBoard: [],
         });
     }
 
@@ -69,76 +43,118 @@ export default class App extends Component {
         const newBoard = this.state.board.map(row => 
             row.map(() => Math.floor(Math.random() * 9 + 1))
         );
-        this.setState({ board: newBoard });
+        this.setState({ board: newBoard }, this.rules);
     }
 
     rules = () => {
         let newBoard = [...this.state.board];
-        let newRowCheck = [...this.state.rowcheck];
-        let newColumnCheck = [...this.state.columncheck];
-        let newSquareCheck = [...this.state.squarecheck];
 
+        // Check rows for duplicates
         for (let i = 0; i < 9; i++) {
+            let rowSet = new Set();
             for (let j = 0; j < 9; j++) {
-                for (let k = j + 1; k < 9; k++) {
-                    let rowIndex = newRowCheck.findIndex(value => value === newBoard[i][j]);
-                    newRowCheck[rowIndex] = 0;
-                    if (newBoard[i][j] === newBoard[i][k]) {
-                        newBoard[i][k] = newRowCheck.find(value => value !== 0);
-                    }
-                    let columnIndex = newColumnCheck.findIndex(value => value === newBoard[j][i]);
-                    newColumnCheck[columnIndex] = 0;
-                    if (newBoard[j][i] === newBoard[k][i]) {
-                        newBoard[k][i] = newColumnCheck.find(value => value !== 0);
-                    }
+                if (newBoard[i][j] !== "" && rowSet.has(newBoard[i][j])) {
+                    newBoard[i][j] = ""; // Empty the cell if duplicate is found
+                } else {
+                    rowSet.add(newBoard[i][j]);
                 }
             }
         }
-        for(let x = 0; x < 3; x++) {
-            for(let i = 0; i < 3; i++) {
-                for(let j = 0; j < 3; j++) {
-                    let squareIndex = newSquareCheck.findIndex(value => value === newBoard[i + 3*x][j + 3*x]);
-                    newRowCheck[rowIndex] = 0;
-                        if (newBoard[i + 3*x][j + 3*x] === newBoard[i + 3*x][k + 3*x]) {
-                            newBoard[i + 3*x][k + 3*x] = newSquareCheck.find(value => value !== 0);
+
+        // Check columns for duplicates
+        for (let i = 0; i < 9; i++) {
+            let colSet = new Set();
+            for (let j = 0; j < 9; j++) {
+                if (newBoard[j][i] !== "" && colSet.has(newBoard[j][i])) {
+                    newBoard[j][i] = ""; // Empty the cell if duplicate is found
+                } else {
+                    colSet.add(newBoard[j][i]);
+                }
+            }
+        }
+
+        // Check 3x3 subgrids for duplicates
+        for (let row = 0; row < 9; row += 3) {
+            for (let col = 0; col < 9; col += 3) {
+                let gridSet = new Set();
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        let value = newBoard[row + i][col + j];
+                        if (value !== "" && gridSet.has(value)) {
+                            newBoard[row + i][col + j] = ""; // Empty the cell if duplicate is found
+                        } else {
+                            gridSet.add(value);
                         }
+                    }
                 }
             }
         }
+
         this.setState({ board: newBoard });
     };
     
+    readyEasyBoard = () => {
+        let newBoard = [...this.state.board];
+        let k = Math.floor(Math.random() * 30 + 10);
+        for (let n = 0; n < k; n++) {
+            let row = Math.floor(Math.random() * 9);
+            let col = Math.floor(Math.random() * 9);
+            newBoard[row][col] = "";
+        }
+        this.setState({ playerBoard: newBoard });
+    }
     
+    readyMediumBoard = () => {
+        let newBoard = [...this.state.board];
+        let k = Math.floor(Math.random() * 20 + 10);
+        for (let n = 0; n < k; n++) {
+            let row = Math.floor(Math.random() * 9);
+            let col = Math.floor(Math.random() * 9);
+            newBoard[row][col] = "";
+        }
+        this.setState({ playerBoard: newBoard });
+    }
+    
+    readyHardBoard = () => {
+        let newBoard = [...this.state.board];
+        let k = Math.floor(Math.random() * 10 + 10);
+        for (let n = 0; n < k; n++) {
+            let row = Math.floor(Math.random() * 9);
+            let col = Math.floor(Math.random() * 9);
+            newBoard[row][col] = "";
+        }
+        this.setState({ playerBoard: newBoard });
+    }
 
     render() {
-    return (
-        <View style={styles.container}>
-            <View style={styles.contentContainer}>
-                {this.state.board.map((row, rowIndex) => (
-                    <View key={rowIndex} style={styles.rowContainer}>
-                        {row.map((cell, colIndex) => (
-                            <Text key={colIndex} style={styles.cellText}>{cell}</Text>
-                        ))}
-                    </View>
-                ))}
-            </View>
-            
-            <View style={styles.navbarContainer}>
-                <TouchableHighlight style={styles.navButton} onPress={this.handleMainDisplayPagePress}>
-                    <Text style={styles.navButtonText}>Welcome</Text>
-                </TouchableHighlight>
+        return (
+            <View style={styles.container}>
+                <View style={styles.contentContainer}>
+                    {this.state.board.map((row, rowIndex) => (
+                        <View key={rowIndex} style={styles.rowContainer}>
+                            {row.map((cell, colIndex) => (
+                                <Text key={colIndex} style={styles.cellText}>{cell}</Text>
+                            ))}
+                        </View>
+                    ))}
+                </View>
                 
-                <TouchableHighlight style={styles.navButton} onPress={this.handleInstructionsDisplayPagePress}>
-                    <Text style={styles.navButtonText}>Rules</Text>
-                </TouchableHighlight>
-                
-                <TouchableHighlight style={styles.navButton} onPress={this.handleEasyDisplayPagePress}>
-                    <Text style={styles.navButtonText}>Easy Level</Text>
-                </TouchableHighlight>
+                <View style={styles.navbarContainer}>
+                    <TouchableHighlight style={styles.navButton} onPress={this.handleMainDisplayPagePress}>
+                        <Text style={styles.navButtonText}>Welcome</Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton} onPress={this.handleInstructionsDisplayPagePress}>
+                        <Text style={styles.navButtonText}>Rules</Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.navButton} onPress={this.handleEasyDisplayPagePress}>
+                        <Text style={styles.navButtonText}>Easy Level</Text>
+                    </TouchableHighlight>
+                </View>
             </View>
-        </View>
-    );
-}
+        );
+    }
 }
 
 const styles = StyleSheet.create({
