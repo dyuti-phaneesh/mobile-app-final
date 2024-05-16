@@ -169,6 +169,30 @@ export default class App extends Component {
                     </View>
                 </View>
                 
+                <View style={{ display: this.state.instructionsDisplay }}>
+                    <View style={styles.contentRules}>
+                        <Text style={styles.rulesTitle}> Sudoku Rules </Text>
+                        <Text style={styles.rulesTxt}> 
+                            Sudoku is played on a grid of 9 x 9 spaces. 
+                            Within the rows and columns are 9 “squares” (made up of 3 x 3 spaces). 
+                            Each row, column and square (9 spaces each) needs to be filled out with the numbers 1-9, 
+                            without repeating any numbers within the row, column or square. 
+                            Each Sudoku grid comes with a few spaces already filled in; the more spaces filled in, the easier the game!
+                        </Text>
+                        
+                        <View style={styles.ruleButtons}>
+                            <TouchableHighlight style={styles.navRuleButton} 
+                                onPress={this.handleHomeDisplayPagePress}>
+                                <Text style={styles.navButtonText}>Home</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight style={styles.navRuleButton} 
+                                onPress={this.handleMainDisplayPagePress}>
+                                <Text style={styles.navButtonText}>Play</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+                
                 
             </View>
     );
@@ -248,6 +272,42 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
+    },
+    
+    //// INSTRUCTIONS PAGE
+    contentRules: {
+        alignItems: "center",
+        width: deviceWidth,
+        height: deviceHeight,
+        backgroundColor: "white",
+        borderColor: "#c39df5",
+        borderWidth: 20,
+    },
+    rulesTitle: {
+        marginTop: 20,
+        fontSize: 25,
+        fontWeight: "bold",
+    },
+    rulesTxt: {
+        margin: deviceWidth / 15,
+        fontSize: deviceHeight / 35,
+        lineHeight: deviceHeight / 23,
+        textAlign: "justify",
+    },
+    ruleButtons: {
+        flexDirection: "row",
+    },
+    navRuleButton: {
+        height: deviceHeight / 20,
+        width: deviceWidth / 5,
+        backgroundColor: 'white',
+        borderColor: 'black',
+        borderWidth: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: 'grey',
+        margin: 10, 
     }
     
 });
