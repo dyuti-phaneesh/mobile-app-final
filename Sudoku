@@ -27,11 +27,18 @@ export default class App extends Component {
         instructionsDisplay: 'none',
     });
 
-    handleMainDisplayPagePress = () => this.setState({
-        homeDisplay: 'none',
-        mainDisplay: 'block',
-        instructionsDisplay: 'none',
-    });
+    handleMainDisplayPagePress = () => {
+        this.setState({
+            homeDisplay: 'none',
+            mainDisplay: 'block',
+            instructionsDisplay: 'none',
+        },
+        () => {
+            const filledBoard = this.createFilledBoard();
+            //alert("Filled:\n " + this.printFilledArray());
+        }
+    );
+    };
 
     handleInstructionsDisplayPagePress = () => this.setState({
         homeDisplay: 'none',
@@ -61,13 +68,6 @@ export default class App extends Component {
     }
     
     
-    randomBoardRender = () => {
-        const newBoard = this.state.board.map(row => 
-            row.map(() => Math.floor(Math.random() * 9 + 1))
-        );
-        this.setState({ board: newBoard }, this.rules);
-    }
-
     rules = () => {
         let newBoard = [...this.state.board];
 
@@ -115,17 +115,60 @@ export default class App extends Component {
         this.setState({ board: newBoard });
     };
     
-    readyEasyBoard = () => {
-        let newBoard = [...this.state.board];
-        let k = Math.floor(Math.random() * 30 + 10);
-        for (let n = 0; n < k; n++) {
-            let row = Math.floor(Math.random() * 9);
-            let col = Math.floor(Math.random() * 9);
-            newBoard[row][col] = "";
+    createFilledBoard = () => {
+        let easyBoard = Array(9).fill(null).map(row => Array(9).fill(0));
+
+        const fillBoard = (row, col) => {
+            if (row === 9) {
+                return true;
+            }
+            if (col === 9) {
+                return fillBoard(row + 1, 0);
+            }
+            let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            this.shuffleArray(numbers);
+            for (let n of numbers) {
+                if (this.isValid(easyBoard, row, col, n)) {
+                    easyBoard[row][col] = n;
+                    if (fillBoard(row, col + 1)) {
+                        return true;
+                    }
+                    easyBoard[row][col] = 0;
+                }
+            }
+            return false;
+        };
+
+        fillBoard(0, 0);
+
+        this.setState({ board: easyBoard });
+    };
+
+    isValid = (board, row, col, n) => {
+        for (let i = 0; i < 9; i++) {
+            if (board[row][i] === n || board[i][col] === n) {
+                return false;
+            }
         }
-        this.setState({ playerBoard: newBoard });
-    }
     
+        const startRow = Math.floor(row / 3) * 3;
+        const startCol = Math.floor(col / 3) * 3;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[startRow + i][startCol + j] === n) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    };
 
     reset = () => {
         this.setState({
@@ -139,6 +182,7 @@ export default class App extends Component {
         const { input, board } = this.state;
         return (
             <View style={styles.container}>
+            
                 <View style={{ display: this.state.homeDisplay }}>
                     <View style={styles.contentHome}>
                         <TouchableHighlight style={styles.navButton} 
@@ -162,8 +206,11 @@ export default class App extends Component {
                             </View>
                         ))}
                         <View style={styles.reset}>
-                            <TouchableHighlight style={styles.resetBox} onPress={() => this.reset()}>
+                            <TouchableHighlight style={styles.resetBox1} onPress={() => this.reset()}>
                                 <Text style={styles.resetTxt}>Reset Game</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight style={styles.resetBox2} onPress={() => this.createFilledBoard()}>
+                                <Text style={styles.resetTxt}>New Game</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -260,15 +307,24 @@ const styles = StyleSheet.create({
         borderColor: "white",
         backgroundColor: "#c9deff",
         padding: 15,
-        borderRadius: 20
+        borderRadius: 20,
+        flexDirection: "row",
     },
     playerText: {
         textAlign: "center",
     },
    
-    resetBox: {
+    resetBox1: {
         height: 25, 
-        width: 150,
+        width: 100,
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 20,
+    },
+    resetBox2: {
+        height: 25, 
+        width: 100,
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
