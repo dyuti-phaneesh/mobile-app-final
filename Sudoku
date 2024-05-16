@@ -1,44 +1,66 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Dimensions } from 'react-native';
+import { View, AppRegistry, Text, StyleSheet, ImageBackground, TextInput, TouchableHighlight, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
+
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            board: Array(9).fill(null).map(() => Array(9).fill("")),
+            score: 0,
+            homeDisplay: 'block',
+            mainDisplay: 'none',
+            instructionsDisplay: 'none',
+            
+            board: Array(9).fill(null).map(row => Array(9).fill("")),
+            input: "",
             playerBoard: [],
         };
     }
 
-    reset = () => {
-        this.setState({
-            board: Array(9).fill(null).map(() => Array(9).fill("")),
-            playerBoard: [],
-        });
-    }
-
-    handleEasyDisplayPagePress = () => this.setState({
-        easyDisplay: 'block',
+    handleHomeDisplayPagePress = () => this.setState({
+        homeDisplay: 'block',
         mainDisplay: 'none',
         instructionsDisplay: 'none',
     });
 
     handleMainDisplayPagePress = () => this.setState({
-        easyDisplay: 'none',
+        homeDisplay: 'none',
         mainDisplay: 'block',
         instructionsDisplay: 'none',
     });
 
     handleInstructionsDisplayPagePress = () => this.setState({
-        easyDisplay: 'none',
+        homeDisplay: 'none',
         mainDisplay: 'none',
         instructionsDisplay: 'block',
     });
+    
+    renderBox(rowIndex, boxIndex) {
+        const { board } = this.state;
+        return (
+          <TextInput
+            style={styles.box}
+            onChangeText={(input) => this.handleBoxChange(rowIndex, boxIndex, input)}
+            value={board[rowIndex][boxIndex]}
+            input type="number"
+            maxLength={1}
+          />
+    )}
 
+    handleBoxChange(rowIndex, boxIndex, input) {
+        if (/^[1-9]$/.test(input) || input === '') {
+            const { board } = this.state;
+            const newBoard = [...board];
+            newBoard[rowIndex][boxIndex] = input;
+            this.setState({ board: newBoard });
+        }
+    }
+    
+    
     randomBoardRender = () => {
         const newBoard = this.state.board.map(row => 
             row.map(() => Math.floor(Math.random() * 9 + 1))
@@ -104,98 +126,124 @@ export default class App extends Component {
         this.setState({ playerBoard: newBoard });
     }
     
-    readyMediumBoard = () => {
-        let newBoard = [...this.state.board];
-        let k = Math.floor(Math.random() * 20 + 10);
-        for (let n = 0; n < k; n++) {
-            let row = Math.floor(Math.random() * 9);
-            let col = Math.floor(Math.random() * 9);
-            newBoard[row][col] = "";
-        }
-        this.setState({ playerBoard: newBoard });
-    }
-    
-    readyHardBoard = () => {
-        let newBoard = [...this.state.board];
-        let k = Math.floor(Math.random() * 10 + 10);
-        for (let n = 0; n < k; n++) {
-            let row = Math.floor(Math.random() * 9);
-            let col = Math.floor(Math.random() * 9);
-            newBoard[row][col] = "";
-        }
-        this.setState({ playerBoard: newBoard });
+
+    reset = () => {
+        this.setState({
+            board: Array(9).fill(null).map(row => Array(9).fill("")),
+            playerBoard: [],
+            input: "",
+        });
     }
 
     render() {
+        const { input, board } = this.state;
         return (
             <View style={styles.container}>
-                <View style={styles.contentContainer}>
-                    {this.state.board.map((row, rowIndex) => (
-                        <View key={rowIndex} style={styles.rowContainer}>
-                            {row.map((cell, colIndex) => (
-                                <Text key={colIndex} style={styles.cellText}>{cell}</Text>
-                            ))}
-                        </View>
-                    ))}
+                <View style={{ display: this.state.homeDisplay }}>
+                    <View style={styles.contentHome}>
+                        <TouchableHighlight style={styles.navButton} 
+                            onPress={this.handleMainDisplayPagePress}>
+                            <Text style={styles.navButtonText}>Main Board</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.navButton} 
+                            onPress={this.handleInstructionsDisplayPagePress}>
+                            <Text style={styles.navButtonText}>Rules</Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
                 
-                <View style={styles.navbarContainer}>
-                    <TouchableHighlight style={styles.navButton} onPress={this.handleMainDisplayPagePress}>
-                        <Text style={styles.navButtonText}>Welcome</Text>
-                    </TouchableHighlight>
-                    
-                    <TouchableHighlight style={styles.navButton} onPress={this.handleInstructionsDisplayPagePress}>
-                        <Text style={styles.navButtonText}>Rules</Text>
-                    </TouchableHighlight>
-                    
-                    <TouchableHighlight style={styles.navButton} onPress={this.handleEasyDisplayPagePress}>
-                        <Text style={styles.navButtonText}>Easy Level</Text>
-                    </TouchableHighlight>
+                <View style={{ display: this.state.mainDisplay }}>
+                    <View style={styles.contentMain}>
+                        {board.map((row, rowIndex) => (
+                            <View key={rowIndex} style={styles.row}>
+                                {row.map((cell, boxIndex) => (
+                                    this.renderBox(rowIndex, boxIndex)
+                                ))}
+                            </View>
+                        ))}
+                        <View style={styles.reset}>
+                            <TouchableHighlight style={styles.resetBox} onPress={() => this.reset()}>
+                                <Text style={styles.resetTxt}>Reset Game</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
                 </View>
+                
+                
             </View>
-        );
-    }
-}
+    );
+}}
+
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'lightblue',
+        height: deviceHeight,
+        width: deviceWidth,
     },
-    contentContainer: {
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    rowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cellText: {
-        margin: 5,
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    navbarContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
+
+    //// HOME PAGE
+    contentHome: {
+        alignItems: "center",
+        width: deviceWidth,
+        height: deviceHeight,
+        backgroundColor: "white",
+        borderColor: "#647891",
+        borderWidth: 20,
     },
     navButton: {
+        height: deviceHeight / 19,
+        width: deviceWidth / 3,
         backgroundColor: 'white',
-        borderColor: 'lightblue',
+        borderColor: 'black',
         borderWidth: 2,
-        borderRadius: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        marginHorizontal: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 15,
     },
-    navButtonText: {
-        fontSize: 16,
-        color: 'darkblue',
+    
+    //// MAIN BOARD PAGE
+    contentMain: {
+        height: deviceHeight, 
+        width: deviceWidth,
+        backgroundColor: "white",
+        marginTop: 20,
     },
+    row: {
+        justifyContent: "center",
+        alignItems: "center", 
+        flexDirection: "row",
+    }, 
+    box: {
+        height: 30,
+        width: 30,
+        backgroundColor: "white",
+        borderColor: "black",
+        borderWidth: 3,
+        margin: 0.5,
+        justifyContent: "center",
+        textAlign: "center",
+    },
+    reset: {
+        alignItems: "center",
+        justifyContent: "center",
+        height: 25,
+        width: 150, 
+        margin: 20, 
+        borderColor: "white",
+        backgroundColor: "#c9deff",
+        padding: 15,
+        borderRadius: 20
+    },
+    playerText: {
+        textAlign: "center",
+    },
+   
+    resetBox: {
+        height: 25, 
+        width: 150,
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+    }
+    
 });
